@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+import requests, sys
+
+private_token = 'V4vrMhNvRpFdD2-cyv4R'
+gl_users_api_url = 'http://192.168.0.2:1180/api/v4/users'
+headers = {'PRIVATE-TOKEN': private_token, 'Content-Type': 'application/json'}
+parm_username = 'username'
+
+print('Usage: Input user parameters')
+print('Requires private token to be set up in script')
+
+username = input('Username: ')
+name = input('Name: ')
+email = input('Email: ')
+password = input('Password (leave blank to auto-generate): ')
+
+request_data = {
+        'username':username,
+        'name':name,
+        'email':email
+        }
+if (password == ''):
+    request_data['force_random_password'] = 'true'
+    request_data['reset_password'] = 'true'
+else:
+    request_data['password'] = password
+
+r = requests.post(gl_users_api_url, json=request_data, headers=headers)
+
+if (r.status_code == 201):
+    print('Created.')
+    print('Raw data in JSON:')
+    print(r.json())
+else:
+    print('Unsuccessful. Code ' + str(r.status_code))
+    print(r.text)
