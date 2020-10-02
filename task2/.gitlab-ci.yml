@@ -1,0 +1,29 @@
+variables:
+  DEPL_TEST_URL: "http://192.168.0.1"
+
+stages:
+  - backup
+  - deploy
+  - test
+
+backup1:
+  stage: backup
+  tags:
+    - shell
+  script:
+    - sudo mkdir -p /var/www/backup
+    - sudo cp -f /var/www/html/index.html /var/www/backup/
+
+deploy1:
+  stage: deploy
+  tags:
+    - shell
+  script:
+    - sudo cp -f index.html /var/www/html/
+
+test1:
+  stage: test
+  tags:
+    - shell
+  script:
+    - diff <(curl -s $DEPL_TEST_URL) index.html
